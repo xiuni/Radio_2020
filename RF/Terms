@@ -1,0 +1,52 @@
+RF = Radio Frequency
+RM = Radio Module
+RRH = Remote Radio Head
+BF = Beamforming
+AxC = Antenna Carrier
+TX = Transmitter
+RX = Receiver
+PA = Power Amplifier
+LNA = low noise Amplifier
+Clipper 消峰
+NCO = Numerically controlled oscillator //数控振荡器
+LO  = local oscillator       //本地电子振荡器
+AAS = Active Antenna system
+CC= Component Carrier
+BW = BandWidth
+eLLF = Ethernet Low-Latency Fronthaul
+BCN = BTS Clock Number 
+DFE = Digital front-end
+AFE = Analog front-end
+ODP = Over Drive Protection
+DL_SRC   sample rate conversion
+LOL
+DUC : Digital Up-Converter, for sample rates  上变频， 即采样率变高
+DDC:  Digital Down-Converter, for sample rates 下变频,既采样率降低
+Digital Step Attenuator   数字衰减器
+ACLR: Adjacent Channel Leakage Ratio  临道泄露
+EVM: Error Vector Magnitude   误差矢量幅度
+OBUE：Operating band unwanted emissions  工作频带有害辐射
+
+Sf: service framework
+Mf: message framework
+Wf: wizard framework
+Emf: event machine framework
+
+
+DFE： Digital Front-End 
+Nahka is optimized 4TX plus 4RX Digital Front End (DFE) chip that is connected to system modules with CPRI/OBSAI connections. ADC and DAC components are connected to Nahka SoC with JESD204B interface.
+
+Made： Nahka 的下一代，AEQB 上的DFE 
+Beamer： master node 的系统
+Chile：AEHB 的另一种名称
+AFE:  Analog Front-End 
+DPD: Digital Pre-Distortion： 数字预失真（DPD）是当今无线通信系统中最基本的构建模块之一。它用于提高功率放大器的效率。
+DAC： 数字转模拟信号
+ADC： 模拟转数字
+ntains one BF master FPGA (Altera SX2800) and eight Made SoCs.
+LLS： low layer split
+RFIC：Radio Frequency Integrated Circuit
+
+CRM: Combined Raw Measurement
+
+CEM: Combined Energy Measurement
