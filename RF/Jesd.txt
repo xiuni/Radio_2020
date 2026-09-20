@@ -1,0 +1,63 @@
+发送器和接收器各维护一个多帧计数器(L M F C)，所有发送器和接收器连接到一个公共（源）SYSREF，这些器件利用SYSREF复位其LMFC，这样所有LMFC应互相同步（在一个时钟周期内）。In the TX, the detected phase of the LMFC determines the moments when alignment characters can be sent. In the RX, the detected phase of the LMFC determines the moments that the alignment characters are read out from the FIFO.
+
+SYSREF signal (Device Subclass 1)：1.确定时延（小于1个多帧时钟周期）。2.对齐和器件时钟同源，LMFC周期的整数倍，在Device Clk沿变化时采样SYSREF信号，确定时延，对齐多帧和帧时钟。SYSREF用于对齐所有收发器件LMFC相位。
+
+JESD 链路的三个状态：
+
+ 1)  代码组同步（CGS）：
+
+1.  RX将SYNC～引脚拉低，发出一个同步请求。
+
+2.  TX从下一个符号开始，发送未加扰的/K28.5/符号（每个符号10位)。
+
+3.  当R X接收到至少4个无错误的连续/K28.5/符号时，R X同步，然后将SYNC～引脚拉高。
+
+4.  R X必须接收到至少4个无错误8B/10B字符，否则同步将失败，链路留在CGS阶段。
+
+5.  C G S阶段结束，I L A S阶段开始。
+
+2） 初始通道同步（ILAS）：
+
+1.在JESD204B中，发送模块捕捉到SYNC~信号的变换，在下一个本地多帧（LMFC）边界上启动ILAS。
+
+2.ILAS主要对齐链路的所有通道，验证链路参数，以及确定帧和多帧边界在接收器的输入数据流中的位置。
+
+3.ILAS由4个多帧组成。每个多帧最后一个字符是多帧对齐字符/A，第一，三，四个多帧以/R字符开始，以/A字符结束。接收器以各通道的最后一个字符/A对齐接收器内各通道内各多帧的末尾。
+
+4.这些特定的控制字符只用于初始通路对齐序列中，而不用在数据传输的任何其他阶段。CGS和ILAS阶段不加扰。
+
+5.RX模块中的FIFO吸收信道偏移。
+
+
+3） 数据传输阶段：没有控制字符，获取链路全带宽。利用字符替换来监视数据同步，多帧计数器LMFC。
+
+
+主要的概念及物理资源
+	1. Stream （AXI stream）
+	2. Xbar
+	3. Stream wrapper
+	4. Converter：ADC/DAC converter， 物理资源
+	5. Link
+	6. Lane
+Serdes
+
+
+一些重要参数（common）：
+
+M：converters/device,转换器（AD/DA）数量
+
+L：lanes/ device(link)，通道数量
+
+F：octets/frame(per lane)，每帧的字节数
+
+K：frames/multiframe，每个多帧的帧数
+
+N：converter resolution，转换器分辨率
+
+N’：total bits/sample，4的倍数，N’=N+控制和伪数据位。
+
+S：samples/converter/frame cycle，每个转换器每帧发送的样本数。当S=1时，帧时钟=采样时钟
+
+CS：control bits/sample
+
+CF：control words/frame cycle/device(link)，通常只在HD=1时使用。
