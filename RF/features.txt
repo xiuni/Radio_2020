@@ -21,8 +21,17 @@
 21. carrier deletion
 22. graceful PA shutdown
 23. PA overpower detection
-24. 
 
+The draco's scope of responsibility includes:
+Control of HW related to radio operation (DFE-IF, DFE, LaaTTA, JESD, RF IC, PA, PA PSU, LNA, LO).
+Handling of Downlink Antenna Carriers
+Handling of Uplink Antenna Carriers
+Configuring selected DFE IP blocks in TX - from DL_Front up to DL_INT.
+Configuring selected DFE IP blocks in RX - from JESD interface up to UL_Front.
+Configuring JESD interface (TX and RX)
+Power measurements both in DL and UL
+Timcal component is responsible for radio timings
+TDD switching
 
 
 
