@@ -1,0 +1,32 @@
+PS：
+PDSCH/PUSCH scheduling (TD/FD)
+PDCCH/PUCCH scheduling
+Carrier Aggregation
+HARQ management
+Link Adaptation
+CSI/BSI handling
+UL Time Alignment
+Beam selection/tracking
+DRB data mapping
+xPBCH, ePBCH
+Subframe type selection
+
+LO：
+DL: Store received RLC PDUs
+DL: Build MAC SDU on scheduler request
+DL: RLC resegmentation/concatenation for ”not fitting” RLC PDUs
+DL HARQ buffers
+Flow Control towards L2-HI
+UL: Buid RLC PDUs from TB
+UL: Send RLC PDUs to L2-HI
+Send PDSCH
+
+HI：
+Performs PDCP protocol processing
+Performs PDCP ciphering
+Integrity protection/verify for SRB traffic
+Stores the PDCP PDUs in a shared PDCP/RLC buffer
+RRC re-establishments?
+Discarding in case of full buffer or packet size not supported
+Handles RLC sending responses (PDU releasing)
+
