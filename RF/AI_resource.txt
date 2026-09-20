@@ -1,0 +1,13 @@
+https://github.com/anthropics/skills/tree/main/skills/skill-creator
+
+• https://skills.sh
+• https://github.com/anthropics/skills
+• https://github.com/openai/skills
+• https://github.com/github/awesome-copilot
+• https://skillsmp.com/zh
+• https://agent-skills.md/
+
+
+github.com/lewislulu/html-ppt-skill
+
+lewislulu/html-ppt-skill: HTML PPT Studio — AgentSkill with 24 themes, 31 layouts, 20+ animations f…
