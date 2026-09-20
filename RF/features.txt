@@ -1,0 +1,30 @@
+1. RF scan
+2. FCP triggered capture
+3. trouble shooting capture
+4. node reset recovery
+5. deep sleep mode
+6. HW initialization
+7. measuer antenna power
+8. Measure RMS power from RFIC power detector
+9. frequency plan(set NCO/LO)
+10. level plan(set TX/RX/FB DSA)
+11. CW signal generation
+12. RFIC internal calibration
+13. JESD alarms and recovery
+14. JESD Eye Diagram
+15. JESD PRBS test
+16. temperature compensation
+17. PA control
+18. TDD switch configuration
+19. beamforming calibration
+20. carrier creation
+21. carrier deletion
+22. graceful PA shutdown
+23. PA overpower detection
+24. 
+
+
+
+
+
+
