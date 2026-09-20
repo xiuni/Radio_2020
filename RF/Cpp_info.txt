@@ -1,0 +1,130 @@
+1. All_of/any_of/none_of
+all_of / any_of / none_of 的返回值都是 bool：
+all_of：区间内所有元素都满足条件时返回 true；否则 false。
+（空区间返回 true）
+any_of：区间内至少一个元素满足条件时返回 true；否则 false。
+（空区间返回 false）
+none_of：区间内没有元素满足条件时返回 true；否则 false。
+（空区间返回 true）
+
+Rule of three: 如果你自定义了析构函数， 那么对应的拷贝构造和拷贝赋值也必须自定义
+Rule of five: 如果你自定义了析构函数或者拷贝构造函数或者赋值构造函数，那么你也需要定义move constructor 和 copy assignment
+Rule of zero： 如果没有自定义实现析构 copy构造， 赋值构造的不需要显式申明这些函数
+
+基类（base class）： 析构函数中必须public 显示定义并加上 virtual
+
+Singleton--懒汉模式：（局部静态变量--最佳版）
+	1. 在函数内定义， 只有第一次使用时被初始化
+函数返回的是这个局部静态变量的引用
+
+Shared_ptr, unique_ptr
+shared_ptr和unique_ptr之间的区别在于：shared_ptr是引用计数的智能指针，而unique_ptr不是。这意味着，可以有多个shared_ptr实例指向同一块动态分配的内存，当最后一个shared_ptr离开作用域时，才会释放这块内存。shared_ptr也是线程安全的。 另一方面，unique_ptr意味着所有权。单个unique_ptr离开作用域时，会立即释放底层内存。
+
+auto sptr1 = std::make_shared<demo>();
+std::shared_ptr<demo> sptr2(sptr1);
+
+
+
+weak_ptr是shared_ptr的黄金伙伴。从上文知道shared_ptr与shared_ptr之间，每拷贝一次，引用计数就会+1，而如果使用weak_ptr则不会出现这个现象。
+
+如果将一个shared_ptr指针赋值给weak_ptr指针，对shared_ptr指针本身不会造成任何影响。对于weak_ptr指针来说，却可以通过一些方法来探测被赋值过来的shared_ptr指针的有效性，同时weak_ptr指针也可以间接操纵shared_ptr指针。以下主要介绍两个方法：
+
+    lock() ，weak_ptr指针调用lock()方法会获得一个返回值：shared_ptr。而这个返回值就是被赋值过来的shared_ptr指针，那么指针都获得了，当然可以操纵它。
+    expired() ，该方法主要用来探测shared_ptr指针的有效性。shared_ptr一旦被释放，指针就会被置为nullptr。
+
+
+
+List封装了链表,Vector封装了数组, list和vector得最主要的区别在于vector使用连续内存存储的，他支持[]运算符，而list是以链表形式实现的，不支持[]。
+Vector对于随机访问的速度很快，但是对于插入尤其是在头部插入元素速度很慢，在尾部插入速度很快。List对于随机访问速度慢得多，因为可能要遍历整个链表才能做到，但是对于插入就快的多了，不需要拷贝和移动数据，只需要改变指针的指向就可以了。另外对于新添加的元素，Vector有一套算法，而List可以任意加入。
+Map,Set属于标准关联容器，使用了非常高效的平衡检索二叉树：红黑树，他的插入删除效率比其他序列容器高是因为不需要做内存拷贝和内存移动，而直接替换指向节点的指针即可。
+Set和Vector的区别在于Set不包含重复的数据。Set和Map的区别在于Set只含有Key，而Map有一个Key和Key所对应的Value两个元素。
+Map和Hash_Map的区别是Hash_Map使用了Hash算法来加快查找过程，但是需要更多的内存来存放这些Hash桶元素，因此可以算得上是采用空间来换取时间策略。
+
+
+1 vector
+    向量 相当于一个数组
+    在内存中分配一块连续的内存空间进行存储。支持不指定vector大小的存储。STL内部实现时，首先分配一个非常大的内存空间预备进行存储，即capacituy（）函数返回的大小，当超过此分配的空间时再整体重新放分配一块内存存储，这给人以vector可以不指定vector即一个连续内存的大小的感觉。通常此默认的内存分配能完成大部分情况下的存储。
+   优点：(1) 不指定一块内存大小的数组的连续存储，即可以像数组一样操作，但可以对此数组
+               进行动态操作。通常体现在push_back() pop_back()
+               (2) 随机访问方便，即支持[ ]操作符和vector.at()
+               (3) 节省空间。
+   缺点：(1) 在内部进行插入删除操作效率低。
+               (2) 只能在vector的最后进行push和pop，不能在vector的头进行push和pop。
+               (3) 当动态添加的数据超过vector默认分配的大小时要进行整体的重新分配、拷贝与释
+                     放 
+
+2 list
+    双向链表
+    每一个结点都包括一个信息快Info、一个前驱指针Pre、一个后驱指针Post。可以不分配必须的内存大小方便的进行添加和删除操作。使用的是非连续的内存空间进行存储。
+   优点：(1) 不使用连续内存完成动态操作。
+               (2) 在内部方便的进行插入和删除操作
+               (3) 可在两端进行push、pop
+   缺点：(1) 不能进行内部的随机访问，即不支持[ ]操作符和vector.at()
+               (2) 相对于verctor占用内存多
+
+From <https://www.cnblogs.com/smiler/p/4457622.html> 
+
+S.No.	Set	List
+1	Set is sorted and unordered	The list is unsorted and ordered
+2	Insertion cannot be done at the desired position	Insertion can be done at any position using the insert() function
+3	Takes logarithmic time for searching an element.	Takes linear time for searching for an element.
+4	Elements are unique.	May contain duplicate elements.
+5	Can contain only one null value.	Can contain more than one null value.
+6	Insertion and deletion take logarithmic time.	Insertion and deletion take constant time.
+7	Implemented in HashSet, LinkedHashSet, and TreeSet.	Implemented in ArrayList and LinkedList.
+
+From <https://www.geeksforgeeks.org/difference-between-stdset-and-stdlist/> 
+
+
+Private	Protected
+The class members declared as private can be accessed only by the functions inside the class.	Protected access modifier is similar to that of private access modifiers.
+Private members keep implementation details in a program.	Protected members enhanced access for derived classes. 
+Only the member functions or the friend functions are allowed to access the private data members of a class.	The class member declared as Protected are inaccessible outside the class but they can be accessed by any subclass(derived class) of that class.
+Private member are not inherited in class.	Protected member are inherited in class.
+
+From <https://www.geeksforgeeks.org/difference-between-private-and-protected-in-c-with-example/> 
+
+
+Public	Protected
+All the class members declared under public will be available to everyone.	Protected access modifier is similar to that of private access modifiers.
+The data members and member functions declared public can be accessed by other classes too.	The class member declared as Protected are inaccessible outside the class but they can be accessed by any subclass(derived class) of that class.
+
+From <https://www.geeksforgeeks.org/public-vs-protected-in-c-with-examples/> 
+
+
+ASAN
+The C & C++ languages are powerful, but can suffer from a class of bugs that affectprogram correctness and program security. Starting in Visual Studio 2019 version 16.9,the Microsoft C/C++ compiler (MSVC) and IDE supports the
+AddressSanitizer
+sanitizer.AddressSanitizer (ASan) is a compiler and runtime technology that exposes many hard-to-find bugs with zero false positives:
+
+
+UndefinedBehaviorSanitizer (UBSan) is a fast undefined behavior detector. UBSan modifies the program at compile-time to catch various kinds of undefined behavior during program execution, for example:
+	• Array subscript out of bounds, where the bounds can be statically determined
+	• Bitwise shifts that are out of bounds for their data type
+	• Dereferencing misaligned or null pointers
+	• Signed integer overflow
+	• Conversion to, from, or between floating-point types which would overflow the destination
+See the full list of available checks below.
+UBSan has an optional run-time library which provides better error reporting. The checks have small runtime cost and no impact on address space layout or ABI.
+
+
+ThreadSanitizer
+Introduction
+ThreadSanitizer is a tool that detects data races. It consists of a compiler instrumentation module and a run-time library. Typical slowdown introduced by ThreadSanitizer is about 5x-15x. Typical memory overhead introduced by ThreadSanitizer is about 5x-10x.
+How to build
+Build LLVM/Clang with CMake.
+Supported Platforms
+ThreadSanitizer is supported on the following OS:
+	• Android aarch64, x86_64
+	• Darwin arm64, x86_64
+	• FreeBSD
+	• Linux aarch64, x86_64, powerpc64, powerpc64le
+	• NetBSD
+Support for other 64-bit architectures is possible, contributions are welcome. Support for 32-bit platforms is problematic and is not planned.
+Usage
+Simply compile and link your program with -fsanitize=thread. To get a reasonable performance add -O1 or higher. Use -g to get file names and line numbers in the warning messages.
+Example:
+clang -fsanitize=thread -g -O1 tiny_race.c
+
+
+
