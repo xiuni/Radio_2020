@@ -1,0 +1,57 @@
+To increase protocol efficiency, and to keep transmissions contained within a slot or beam without having to depend on other slots and beams, NR introduces the following four main reference signals.
+	• Demodulation Reference Signal (DMRS) 
+	• Phase Tracking Reference Signal (PTRS)       >6G, <6G 使用CRI-RS 的 timeFreq tracking
+	• Sounding Reference Signal (SRS)   UL MIMO
+	• Channel State Information Reference Signal (CSI-RS)
+
+Reference Signals Mapping with associated with different physical channel is depicted in following figure.
+
+
+
+
+What’s new in NR compare to  LTE 
+	• In NR, there is not Cell specific Reference Signal (C-RS)
+	• New Reference Signal PTRS has been introduced for Time/Frequency tracking
+	• DMRS has been introduced for both downlink and uplink channels
+	• In NR, reference signals are transmitted only when it is necessary where as in LTE constantly exchanging reference signals to manage the link.
+Detailed explanation
+Demodulation Reference Signal (DMRS) 
+The DMRS is specific for specific UE, and used to estimate the radio channel. The system can beamform the DMRS, keep it within a scheduled resource, and transmit it only when necessary in either DL or UL. Additionally, multiple orthogonal DMRSs can be allocated to support MIMO transmission. The network presents users with DMRS information early on for the initial decoding requirement that low-latency applications need, but it only occasionally presents this information for low-speed scenarios in which the channel shows little change.  In high-mobility scenarios to track fast changes in channel , it might increase the rate of transmission  of DMRS signal (called “additional DMRS”).
+	• DMRS refers to demodulation reference signal
+	• It is used by a receiver for radio channel estimation for demodulation of associated physical channel
+	• DMRS design and mapping is specific to each Downlink and Uplink NR channels vize NR-PBCH, NR-PDCCH, NR-PDSCH, NR-PUSCH , NR- PUSCH
+	• DMRS is specific for specific UE, and transmitted on demand
+	• DMRS can be beamform the DMRS, kept within a scheduled resource, and transmit it only when necessary in either DL or UL
+	• Multiple orthogonal DMRSs can be allocated to support MIMO transmission.
+Phase Tracking Reference Signal (PTRS)
+The phase noise of a transmitter increases as the frequency of operation increases. The PTRS plays a crucial role especially at mmWave frequencies to minimize the effect of the oscillator phase noise on system performance. One of the main problems that phase noise introduces into an OFDM signal appears as a common phase rotation of all the sub-carriers, known as common phase error (CPE).
+	• PTRS stands for Phase Tracking Reference signal
+	• It’s main function is to track phase of the Local Oscillator  at transmitter and receiver.
+	• PTRS enables suppression of phase noise and common phase error specially at higher mmwave frequencies.
+	• It is present both in uplink (in NR-PUSCH) and downlink (in NR-PDSCH) channels.
+	• Due to phase noise properties, PTRS has low density in frequency domain and high density in time domain.
+	• PTRS is associated with one DMRS port during transmission. Moreover it is confined to scheduled BW and duration used for NR-PDSCH/NR-PUSCH
+	• The NR system typically maps the PTRS information to a few subcarriers per symbol because the phase rotation affects all sub-carriers within an OFDM symbol equally but shows low correlation from symbol to symbol
+	• The system configures the PTRS depending on the quality of the oscillators, carrier frequency, Sub Carrier Spacing, and modulation and coding schemes that the transmission uses
+Sounding Reference Signal (SRS)
+As a UL-only signal, the SRS is transmitted by the UE to help the gNB obtain the channel state information (CSI) for each user. Channel State Information describes how the NR signal propagates from the UE to the gNB and represents the combined effect of scattering, fading, and power decay with distance. The system uses the SRS for resource scheduling, link adaptation, Massive MIMO, and beam management.
+	• SRS refers to Sounding Reference signal and uplink only signal.
+	• It is configured specific to UE
+	• In time domain, it spans 1/2/4 consecutive symbols which are mapped within last six symbols of the slot
+	• Multiple SRS symbols allow coverage extension and increased sounding capacity
+	• The design of SRS and its frequency hopping mechanism is same as used in LTE.
+Channel State Information Reference Signal (CSI-RS)
+As a DL-only signal, the CSI-RS the UE receives is used to estimate the channel and report channel quality information back to the gNB. During MIMO operations, NR uses different antenna approaches based on the carrier frequency. At lower frequencies, the system uses a modest number of active antennas for MU-MIMO and adds FDD operations. In this case, the UE needs the CSI-RS to calculate the CSI and report it back in the UL direction.
+	• CSI-RS refers to channel state information reference signal and these signals are downlink only signal.
+	• It is used for DL CSI acquisition.
+	• Used for RSRP measurements used during mobility and beam management
+	• Also used for frequency/time tracking, demodulation and UL reciprocity based pre-coding
+	• CSI-RS is configured specific to UE, but multiple users can also share the same resource
+	• 5G NR standard allows high level of flexibility in CSI-RS configurations, a resource can be configured with up to 32 ports.
+	• CSI-RS resource may start at any OFDM symbol of the slot and it usually occupies 1/2/4 OFDM symbols depending upon configured number of ports.
+	• CSI-RS can be periodic, semi-persistent or aperiodic (due to DCI triggering)
+	• For time/frequency tracking, CSI-RS can either be periodic or aperiodic. It is transmitted in bursts of two or four symbols which are spread across one or two slots
+References:
+3GPP TS 38.211, TS 38.212, TS 38.213
+
+From <http://www.techplayon.com/5g-nr-reference-signals-dmrs-ptrssrs-and-csi-rs/> 
