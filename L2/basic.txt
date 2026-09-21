@@ -1,0 +1,113 @@
+帧结构
+1. 一个系统帧是10ms， 分10个子帧 subframe ，每个subframe   1ms
+每个子帧中包含几个slot，是根据子载波间隔来定的，子载波间隔定义为
+△f = 2^N * 15KHz
+所以是： 
+子载波间隔 15KHZ的， N=0， 一个subframe中   2^N = 1 个 slot，  一个系统帧10个slot
+子载波间隔 30KHZ的， N=1， 一个subframe中   2^N = 2 个 slot， 一个系统帧20个slot  <6G  FR1
+子载波间隔 120KHZ的， N=3， 一个subframe中  ^N = 8 个 slot， 一个系统帧80个slot   >6G  FR2
+Nokia 5G 中定义了 6G 以下的频段， N=1； 即 30KHz
+6G～100G的， N=3; 即 120KHz
+有一个比较特殊的，就是SS block 的子载波间隔，即小区中心频点的用作小区搜索和同步的子载波，他们的间隔如下：
+6G 以下： 30KHz
+6G～100G， 240KHz （普通的是120KHz）
+每个slot 包含 14 个 symbols (固定)
+每个RB 包含 12 个 subcarrier (固定)
+
+调度单位： 5G 以slot 为调度单位
+
+物理层
+1） 上行物理信道
+PUSCH 数据共享信道
+PUCCH 控制信道
+PRACH 随机接入用
+2） 下行物理信道
+PDSCH
+PBCH
+PDCCH
+3） 调制编码方式
+BPSK，QPSK， 16QAM，64QAM，256QAM
+4） 上行下行子帧时间差
+由于传输以及数据处理存在时延，为了保证nodeB 收到UE的上行子帧时 timing 是对齐的，所以上行子帧的timing 会稍微提前 下行，已保证下行收到的时候时间正好，不同的UE会有不同的时间提前量
+
+算速率： 6* (14-3) *768 *8 *2 *0.75
+
+LA: link adaptation， 动态计算 MCS
+MCS:
+信道质量好，MCS 高一些，每次传输的TB size 大一些， 冗余少
+信道质量不好，MCS 调制低一些，传输的TB size 小一些，冗余数据更多，  重传少一些
+
+
+MAC层
+对物理层提供：
+数据传输
+HARQ 响应
+5G的传输信道（MAC层 与 物理层之间的）：
+BCH 下行
+DL-SCH 下行
+UL-SCH 上行
+RACH 上行 随机接入
+5G的逻辑信道 （RLC 层 与 MAC 之间的）
+BCCH
+CCCH
+DCCH
+DTCH
+HARQ process, HARQ entity
+SCS	self-contained slot	Number of HARQ processes
+30 kHz	supported	4
+30 kHz	not supported	10
+120 kHz	supported	8
+120 kHz	not supported	10
+一个entity 最多几个HARQ process？？？ 默认一个？可以多个？？？
+A maximum of one MAC PDU can be transmitted per TB per MAC entity.
+A MAC entity uses the same C-RNTI on all Serving Cells.
+我的理解
+一个MAC entiry 对应一个UE， 一个MAC entity 使用一个C-RNTI，即一个UE 对应一个C-RNTI
+范围是（003D-FFF3）
+MAC PDU 的格式：即MAC 给物理层的数据的格式 （和LTE 差别较大）
+几个特殊的CE（control element )
+BSR MAC CE 用于 UE 上报buffer status
+C-RNTI CE UE会通过C-RNTI MAC CE将自己的C-RNTI告诉NodeB
+UE Contention resolution CE NodeB 使用这个CE 用于解决冲突
+Timing Advance Command CE 用于指示上行调整时间差值
+
+MAC RAR(msg2)，即 回复给UE的RACH 消息， 里面包含的字段主要有：
+Timing Advance Command （用户指定UE 上行同步需要的时间调整量）
+UL Grant: 分配给Msg3 的上行资源
+Temporary C-RNTI： 用于UE 与 NodeB 的后续通信
+
+
+○ PDCCH 携带  DCI， gNB 下发的调度信息
+DL DCI       1_0 for Msg2             1_1 for other， 用于分配PDSCH
+UL DCI       0_0 for Msg3 retransmission       0_1 for other   用于PUSCH 传输
+○ PUCCH 携带 UCI，主要用来携带HARQ/SR detection， UE 上报
+PUCCH is located in the 14th symbol of all slots except PRACH slots. One UE can use one PUCCH symbol 
+Format 0   transmission is over 1 symbol and number of UCI bits is 1 or 2
+Format 2  transmission is over 1 symbol (over 1 to 16 PRBs) and number of UCI bits is  in range [3..50]. 可用作CSI report
+○ PUCCH 仅在pCell 上传输（CA的情况），所以sCell的harq feedback 要使用Joint-UCI
+○ SlotTypeSelector 确定slot pattern 模型， 在一个slot pattern 内的每个slot 是什么类型的： UL/DL 还是SSB或者是PRACH，CSIRS
+
+	ü k0, timing between PDCCH to PDSCH, is mandatory set to 0. Meaning PDCCH & PDSCH are transmitted on same slot.   下行DCI 和 下行数据在同一个slot 传输,即k0=0
+	ü k1, timing between PDSCH to PUCCH, is either set to k1Min or k1Min+1 slots. Meaning PUCCH is transmitted k1Min or k1Min+1 slots after the PDSCH transmission.
+          下行ACK（PUCCH）延时， 在PDCCH 里面携带（与下行DCI ） K1 {0…15}
+	ü k2, timing between PDCCH to PUSCH, is set such a PUSCH is scheduled by a PDCCH transmitted on the previous UL Slot. 
+	上行DCI 和上行数据间隔， k2: {2, 4, 6, 8, 10} ， cell setup 时计算，根据 UL/DL ratio
+	
+	
+pscnfg： 配置，包括地址的配置等
+pscell： cell setup， subcell， subcellgroup setup 相关的
+psuser： user setup， bearer setup相关的功能
+psSgnl： RRC signaling
+psPeer： subcellgroup 之间beam tracking 需要用到
+
+
+
+SA的 情况下：
+1. SSB 盲检， 得到MIB， KSSB， SSB index 等信息  （KSSB 最高位指示后续有没有SIB）
+2. 根据MIB 信息得到coreSet 0， sfn slot 得到传输SIB的PDCCH
+3. UE 解析SIB 对应的PDCCH
+4. UE 解析PDSCH 中的 SIB 信息， SIB 信息主要包含point A 位置， 小区带宽， tdd frame structure 
+（NSA没有SIB, 对应 的point A等信息： RRC  reconfiguration 消息LTE 下发）
+5.UE 随机接入
+
+
