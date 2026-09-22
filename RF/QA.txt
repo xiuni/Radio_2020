@@ -1,0 +1,28 @@
+为什么要封装 PathName 类？
+虽然 PathName 内部只有一个 std::string name，看似"多此一举"，但这种封装在工程上有明确目的：
+
+1. 类型安全（Strong Typing / Type Tagging）
+这是最主要的原因。裸 std::string 在系统里可能表示很多东西：路径名、载波名、文件路径、用户输入……直接用 std::string 会导致：
+
+封装成 PathName 后：
+
+同一个 workspace 里可以看到 CarrierName.hpp、PathNameId 等一整套"薄包装"类型，都是同一设计思路。
+
+2. 统一的序列化支持
+类里有 serialize 模板方法，配合 cereal_rfsw 提供反射/持久化能力：
+
+裸字符串没法带上这种 hook。
+
+3. 可控的比较语义
+自定义了 operator< 和 operator==，可以将来改写比较规则（例如忽略大小写、路径归一化），而调用方代码不用改。
+
+4. 可扩展性
+今天只有一个 name 字段，明天可能加：校验规则、缓存的 hash、路径分段……封装留了扩展点，不至于满代码库到处替换 std::string。
+
+5. 可读性 & 自文档化
+函数签名里出现 PathName 比 std::string 表意更清晰，IDE 跳转、grep 也更精确。
+
+6. DLL 边界导出
+RADIOTYPES_EXPORT 和自由函数 to_string / operator<< 让它作为库导出符号统一管理，方便跨模块使用。
+
+总结：这是典型的 "strong typedef" 模式（值语义 wrapper），核心目的是把语义信息编码进类型系统，用编译期检查代替运行期错误，同时挂上序列化、比较、输出等基础设施。代价极小（零运行时开销），收益是长期可维护性。
